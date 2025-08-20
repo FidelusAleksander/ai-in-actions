@@ -1,21 +1,17 @@
 name: Step 2
 
-
 on:
   workflow_dispatch:
-  # Common event triggers: pull_request, push, issues, issue_comment (feel free to experiment)
-  # Docs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
-  # Example:
-  # pull_request:
-  #   branches:
-  #     - main
-  #   types:
-  #     - closed
+  workflow_run:
+    workflows: ["Step 1"]
+    types:
+      - completed
 
 permissions:
   contents: write
   actions: write
   issues: write
+  models: read
 
 env:
   STEP_3_FILE: ".github/steps/3-step.md"
@@ -64,22 +60,71 @@ jobs:
 
       # START: Check practical exercise
 
-      # replace-me: Example of a grading check. You can add more checks as needed.
-      - name: Check if README file exists
-        id: check-file-exists
+      # Check for successful workflow run
+      - name: Check for successful workflow run
+        id: check-workflow-run
         continue-on-error: true
-        uses: skills/exercise-toolkit/actions/file-exists@v0.7.0
+        uses: actions/github-script@v7
         with:
-          file: README.md
+          script: |
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'ask-ai.yml',
+              status: 'completed',
+              conclusion: 'success'
+            });
+            if (runs.data.total_count > 0) {
+              console.log('Found successful workflow run');
+              return true;
+            } else {
+              core.setFailed('No successful workflow runs found');
+              return false;
+            }
 
-      # replace-me: Example of a grading check. You can add more checks as needed.
-      - name: Check for keyphrase in README.md
-        id: check-for-keyphrase
+      # Check if workflow has question input parameter
+      - name: Check for question input parameter
+        id: check-question-input
         continue-on-error: true
-        uses: skills/action-keyphrase-checker@v1
+        uses: actions/github-script@v7
         with:
-          text-file: README.md
-          keyphrase: Installation guide
+          script: |
+            const fs = require('fs');
+            try {
+              const workflow = fs.readFileSync('.github/workflows/ask-ai.yml', 'utf8');
+              if (workflow.includes('question:') && workflow.includes('inputs:')) {
+                console.log('Found question input parameter');
+                return true;
+              } else {
+                core.setFailed('Question input parameter not found');
+                return false;
+              }
+            } catch (error) {
+              core.setFailed(`Error reading workflow file: ${error.message}`);
+              return false;
+            }
+
+      # Check if workflow has system-prompt parameter
+      - name: Check for system-prompt parameter
+        id: check-system-prompt
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const workflow = fs.readFileSync('.github/workflows/ask-ai.yml', 'utf8');
+              if (workflow.includes('system-prompt:')) {
+                console.log('Found system-prompt parameter');
+                return true;
+              } else {
+                core.setFailed('System-prompt parameter not found');
+                return false;
+              }
+            } catch (error) {
+              core.setFailed(`Error reading workflow file: ${error.message}`);
+              return false;
+            }
 
       - name: Update comment - step results
         uses: GrantBirki/comment@v2.1.1
@@ -92,12 +137,12 @@ jobs:
           vars: |
             step_number: 2
             results_table:
-              - description: "Checked if README.md file exists"
-                passed: ${{ steps.check-file-exists.outcome == 'success' }}
-              - description: "Checked for Installation guide in README.md"
-                passed: ${{ steps.check-for-keyphrase.outcome == 'success' }}
-
-      # Add more checks as needed
+              - description: "Checked for successful workflow run"
+                passed: ${{ steps.check-workflow-run.outcome == 'success' }}
+              - description: "Verified workflow accepts question input parameter"
+                passed: ${{ steps.check-question-input.outcome == 'success' }}
+              - description: "Verified workflow includes system-prompt parameter"
+                passed: ${{ steps.check-system-prompt.outcome == 'success' }}
 
       # END: Check practical exercise
 
