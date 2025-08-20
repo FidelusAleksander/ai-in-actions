@@ -1,16 +1,11 @@
 name: Step 2
 
-
 on:
   workflow_dispatch:
-  # Common event triggers: pull_request, push, issues, issue_comment (feel free to experiment)
-  # Docs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
-  # Example:
-  # pull_request:
-  #   branches:
-  #     - main
-  #   types:
-  #     - closed
+  workflow_run:
+    workflows: ["Ask AI"]
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -23,6 +18,7 @@ env:
 jobs:
   find_exercise:
     name: Find Exercise Issue
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.0
 
   # This job is optional. We often call it a "grading job". If the step is not graded, remove it.
@@ -64,22 +60,31 @@ jobs:
 
       # START: Check practical exercise
 
-      # replace-me: Example of a grading check. You can add more checks as needed.
-      - name: Check if README file exists
-        id: check-file-exists
+      # Check if the ask-ai.yml workflow file exists
+      - name: Check if ask-ai workflow exists
+        id: check-workflow-exists
         continue-on-error: true
         uses: skills/exercise-toolkit/actions/file-exists@v0.7.0
         with:
-          file: README.md
+          file: .github/workflows/ask-ai.yml
 
-      # replace-me: Example of a grading check. You can add more checks as needed.
-      - name: Check for keyphrase in README.md
-        id: check-for-keyphrase
+      # Check if the workflow has question input parameter
+      - name: Check for question input in workflow
+        id: check-question-input
         continue-on-error: true
         uses: skills/action-keyphrase-checker@v1
         with:
-          text-file: README.md
-          keyphrase: Installation guide
+          text-file: .github/workflows/ask-ai.yml
+          keyphrase: "question:"
+
+      # Check if the workflow has system-prompt parameter
+      - name: Check for system-prompt in workflow
+        id: check-system-prompt
+        continue-on-error: true
+        uses: skills/action-keyphrase-checker@v1
+        with:
+          text-file: .github/workflows/ask-ai.yml
+          keyphrase: "system-prompt:"
 
       - name: Update comment - step results
         uses: GrantBirki/comment@v2.1.1
@@ -92,12 +97,12 @@ jobs:
           vars: |
             step_number: 2
             results_table:
-              - description: "Checked if README.md file exists"
-                passed: ${{ steps.check-file-exists.outcome == 'success' }}
-              - description: "Checked for Installation guide in README.md"
-                passed: ${{ steps.check-for-keyphrase.outcome == 'success' }}
-
-      # Add more checks as needed
+              - description: "Checked if ask-ai.yml workflow file exists"
+                passed: ${{ steps.check-workflow-exists.outcome == 'success' }}
+              - description: "Checked for question input parameter in workflow"
+                passed: ${{ steps.check-question-input.outcome == 'success' }}
+              - description: "Checked for system-prompt parameter in workflow"
+                passed: ${{ steps.check-system-prompt.outcome == 'success' }}
 
       # END: Check practical exercise
 
@@ -107,7 +112,7 @@ jobs:
 
   post_next_step_content:
     name: Post next step content
-    needs: [find_exercise] # if check_step_work then "needs: [find_exercise, check_step_work]"
+    needs: [find_exercise, check_step_work]
     runs-on: ubuntu-latest
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}

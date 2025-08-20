@@ -2,14 +2,10 @@ name: Step 3 # Last step of the exercise
 
 on:
   workflow_dispatch:
-  # Common event triggers: pull_request, push, issues, issue_comment (feel free to experiment)
-  # Docs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
-  # Example:
-  # pull_request:
-  #   branches:
-  #     - main
-  #   types:
-  #     - closed
+  workflow_run:
+    workflows: ["Issue Analyzer"]
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -22,11 +18,100 @@ env:
 jobs:
   find_exercise:
     name: Find Exercise Issue
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     uses: skills/exercise-toolkit/.github/workflows/find-exercise-issue.yml@v0.7.0
+
+  check_step_work:
+    name: Check step work
+    runs-on: ubuntu-latest
+    needs: [find_exercise]
+    env:
+      ISSUE_REPOSITORY: ${{ github.repository }}
+      ISSUE_NUMBER: ${{ needs.find_exercise.outputs.issue-number }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get response templates
+        uses: actions/checkout@v4
+        with:
+          repository: skills/exercise-toolkit
+          path: exercise-toolkit
+          ref: v0.7.0
+
+      - name: Find last comment
+        id: find-last-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          repository: ${{ env.ISSUE_REPOSITORY }}
+          issue-number: ${{ env.ISSUE_NUMBER }}
+          direction: last
+
+      - name: Update comment - checking work
+        uses: GrantBirki/comment@v2.1.1
+        with:
+          repository: ${{ env.ISSUE_REPOSITORY }}
+          issue-number: ${{ env.ISSUE_NUMBER }}
+          comment-id: ${{ steps.find-last-comment.outputs.comment-id }}
+          file: exercise-toolkit/markdown-templates/step-feedback/checking-work.md
+          edit-mode: replace
+
+      # START: Check practical exercise
+
+      # Check if the issue-analyzer.yml workflow file exists
+      - name: Check if issue-analyzer workflow exists
+        id: check-workflow-exists
+        continue-on-error: true
+        uses: skills/exercise-toolkit/actions/file-exists@v0.7.0
+        with:
+          file: .github/workflows/issue-analyzer.yml
+
+      # Check if the workflow has required permissions
+      - name: Check for models read permission
+        id: check-models-permission
+        continue-on-error: true
+        uses: skills/action-keyphrase-checker@v1
+        with:
+          text-file: .github/workflows/issue-analyzer.yml
+          keyphrase: "models: read"
+
+      # Check if the workflow has issues write permission
+      - name: Check for issues write permission
+        id: check-issues-permission
+        continue-on-error: true
+        uses: skills/action-keyphrase-checker@v1
+        with:
+          text-file: .github/workflows/issue-analyzer.yml
+          keyphrase: "issues: write"
+
+      - name: Update comment - step results
+        uses: GrantBirki/comment@v2.1.1
+        with:
+          repository: ${{ env.ISSUE_REPOSITORY }}
+          issue-number: ${{ env.ISSUE_NUMBER }}
+          comment-id: ${{ steps.find-last-comment.outputs.comment-id }}
+          edit-mode: replace
+          file: exercise-toolkit/markdown-templates/step-feedback/step-results-table.md
+          vars: |
+            step_number: 3
+            results_table:
+              - description: "Checked if issue-analyzer.yml workflow file exists"
+                passed: ${{ steps.check-workflow-exists.outcome == 'success' }}
+              - description: "Checked for models: read permission in workflow"
+                passed: ${{ steps.check-models-permission.outcome == 'success' }}
+              - description: "Checked for issues: write permission in workflow"
+                passed: ${{ steps.check-issues-permission.outcome == 'success' }}
+
+      # END: Check practical exercise
+
+      - name: Fail job if not all checks passed
+        if: contains(steps.*.outcome, 'failure')
+        run: exit 1
 
   post_review_content:
     name: Post review content
-    needs: [find_exercise] # if check_step_work then "needs: [find_exercise, check_step_work]"
+    needs: [find_exercise, check_step_work]
     runs-on: ubuntu-latest
     env:
       ISSUE_REPOSITORY: ${{ github.repository }}
@@ -68,4 +153,4 @@ jobs:
     uses: skills/exercise-toolkit/.github/workflows/finish-exercise.yml@v0.7.0
     with:
       issue-url: ${{ needs.find_exercise.outputs.issue-url }}
-      exercise-title: "(replace-me: Exercise title)"
+      exercise-title: "AI in Actions"
