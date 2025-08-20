@@ -22,8 +22,8 @@ jobs:
     name: Start Exercise
     uses: skills/exercise-toolkit/.github/workflows/start-exercise.yml@v0.7.0
     with:
-      exercise-title: "(replace-me: Exercise title)"
-      intro-message: "(replace-me: Brief one line introduction message for the exercise)"
+      exercise-title: "AI in Actions"
+      intro-message: "Learn how to integrate AI models directly into your GitHub Actions workflows using GitHub Models."
 
   post_next_step_content:
     name: Post next step content
