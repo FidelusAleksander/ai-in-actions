@@ -16,7 +16,7 @@ graph LR
     style C fill:#ba68c8,stroke:#333,stroke-width:2px,color:#000
 ```
 
-- 📥 **Context**: Gather data from outputs of other actions (e.g file contents, API results, or computed values) or `github` [event context](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#github-context)
+- 📥 **Context**: Gather data from outputs of other actions (e.g file contents, API results, or computed values) or `github` [event context](https://docs.github.com/actions/reference/workflows-and-actions/contexts#github-context)
 - 🤖 **Inference**: Use the context to build a focused prompt for `actions/ai-inference` to analyze
 - 📤 **Impact**: Pass the AI result to another action/script to create impact.
 
