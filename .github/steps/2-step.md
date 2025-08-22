@@ -70,11 +70,11 @@ This pattern keeps workflows simple while handling judgment‑heavy tasks that a
              system-prompt: |
                You are an assistant that triages GitHub issues. Summarize the issue, identify missing information and propose next steps. Be concise and actionable.
              prompt: |
-               New issue was opened by ${{ github.event.issue.user.login }}
-               Title: ${{ github.event.issue.title }}
+               New issue was opened by {% raw %}${{ github.event.issue.user.login }}{% endraw %}
+               Title: {% raw %}${{ github.event.issue.title }}{% endraw %}
                Body:
                ---
-               ${{ github.event.issue.body }}
+               {% raw %}${{ github.event.issue.body }}{% endraw %}
                ---
    ```
 
@@ -86,9 +86,9 @@ This pattern keeps workflows simple while handling judgment‑heavy tasks that a
    - name: Comment results on the issue
      uses: peter-evans/create-or-update-comment@v4
      with:
-       token: ${{ secrets.GITHUB_TOKEN }}
-       issue-number: ${{ github.event.issue.number }}
-       body-path: ${{ steps.ai-response.outputs.response-file }}
+       token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+       issue-number: {% raw %}${{ github.event.issue.number }}{% endraw %}
+       body-path: {% raw %}${{ steps.ai-response.outputs.response-file }}{% endraw %}
    ```
 
 1. And we're done! Commit the file directly to the `main` branch, then open the **Actions** tab and confirm the workflow appears.
