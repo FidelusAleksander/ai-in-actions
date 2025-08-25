@@ -80,7 +80,7 @@ This pattern keeps workflows simple while handling judgment‑heavy tasks that a
 
    > 🪧 **Note:** Notice how we are passing dynamic values from the `github` event context
 
-1. Now we'll use the AI output file to post a comment back to the issue to provide immediate feedback:
+1. Now we'll use the `ai-inference` `response` output to post a comment back to the issue to provide immediate feedback:
 
    ```yaml
    - name: Comment results on the issue
@@ -88,7 +88,7 @@ This pattern keeps workflows simple while handling judgment‑heavy tasks that a
      with:
        token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
        issue-number: {% raw %}${{ github.event.issue.number }}{% endraw %}
-       body-path: {% raw %}${{ steps.ai-response.outputs.response-file }}{% endraw %}
+       body: {% raw %}${{ steps.ai-response.outputs.response }}{% endraw %}
    ```
 
 1. And we're done! Commit the file directly to the `main` branch, then open the **Actions** tab and confirm the workflow appears.
