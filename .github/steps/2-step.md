@@ -98,6 +98,7 @@ This pattern keeps workflows simple while handling judgment‑heavy tasks that a
        token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
        issue-number: {% raw %}${{ github.event.issue.number }}{% endraw %}
        body: {% raw %}${{ steps.ai-response.outputs.response }}{% endraw %}
+
    ```
 
 1. And we're done! Commit the file directly to the `main` branch, then open the **Actions** tab and confirm the workflow appears.
