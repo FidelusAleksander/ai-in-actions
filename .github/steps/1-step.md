@@ -34,7 +34,9 @@ Now that you understand the concepts, let's put them into practice! Open a new t
 
 Let's create a simple workflow that we can trigger manually from the GitHub UI.
 
-1. Click `Add File` and create a new workflow file named `.github/workflows/ask-ai.yml`
+1. Navigate to the `Code` tab of your repository. Then into `.github/workflows/` directory.
+
+1. Click `Add File` and create a new workflow file named `ask-ai.yml`
 
 1. Add the workflow name, manual event trigger and required permissions:
 

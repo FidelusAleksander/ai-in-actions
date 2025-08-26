@@ -32,9 +32,11 @@ This pattern keeps workflows simple while handling judgment‑heavy tasks that a
 
 ### ⌨️ Activity: Create an issue analyzer workflow
 
-1. Create `.github/workflows/issue-analyzer.yml` workflow on the `main` branch.
+1. Navigate to the `Code` tab of your repository. Then into `.github/workflows/` directory.
 
-   Add the workflow metadata and permissions
+1. Click `Add File` and create a new workflow file named `issue-analyzer.yml`
+
+1. Add the workflow metadata and permissions
 
    ```yaml
    name: Issue Analyzer
@@ -78,6 +80,8 @@ This pattern keeps workflows simple while handling judgment‑heavy tasks that a
                Provide concise, helpful suggestions, ask clarifying questions and identify any missing information that would help resolve the issue faster. 
                
                Always respond with ready-to-use markdown content (no code blocks) that can be posted directly as an issue comment. 
+
+               Sign off as AI assistant.
              prompt: |
                New issue was opened by {% raw %}${{ github.event.issue.user.login }}{% endraw %}
                Title: {% raw %}${{ github.event.issue.title }}{% endraw %}
