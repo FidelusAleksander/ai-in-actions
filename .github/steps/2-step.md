@@ -103,6 +103,8 @@ We'll follow the three-step pattern: gathering context from issue events, proces
 
    ```
 
+   > ⚠️ **Important:** Make sure this step is properly indented at the same level as the previous step. Both steps should be at the same indentation level under the `steps:` section.
+
 1. And we're done! Commit the file directly to the `main` branch, then open the **Actions** tab and confirm the workflow appears.
 
 <details>
