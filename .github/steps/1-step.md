@@ -23,7 +23,7 @@ The [integration](https://docs.github.com/en/github-models/use-github-models/int
 > Want to dive deeper? Check out these resources:
 >
 > - 📖 [GitHub Models Documentation](https://docs.github.com/en/github-models)
-> - ⚡ [Rate Limits](https://docs.github.com/en/github-models/use-github-models/prototyping-with-ai-models#rate-limits) for GitHub Models
+> - ⚡ [Rate Limits](https://docs.github.com/en/github-models/use-github-models/prototyping-with-ai-models#rate-limits) and [Moving Beyond Free Limits](https://github.blog/changelog/2025-06-24-github-models-now-supports-moving-beyond-free-limits/) for GitHub Models
 
 ### ⌨️ Activity: Create Your First AI Workflow
 
