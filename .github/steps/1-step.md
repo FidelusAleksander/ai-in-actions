@@ -77,7 +77,7 @@ Let's create a simple workflow that we can trigger manually from the GitHub UI.
              echo "{% raw %}${{ steps.ai-response.outputs.response }}{% endraw %}" >> $GITHUB_STEP_SUMMARY
    ```
 
-> ❗ **Caution:** Be mindful of YAML formatting! GitHub's file editor will show red underlines for certain YAML errors.
+   > ❗ **Caution:** Be mindful of YAML formatting! GitHub's file editor will show red underlines for certain YAML errors.
 
 1. Commit the workflow file directly to the `main` branch.
 
