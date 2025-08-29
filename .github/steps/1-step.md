@@ -91,6 +91,9 @@ Now let's test the workflow you just created to see AI in action!
 
 1. Click the **Run workflow** button, keep the default branch selected, and click the green **Run workflow** button to trigger it.
 
+   <img width="900" alt="run workflow manual trigger" src="https://github.com/user-attachments/assets/89d96ce7-ca5e-4f5f-b8d0-25ebd5cdc4d6" />
+
+
 1. Wait for the workflow to complete and check the workflow run summary to see the AI's response displayed in a nicely formatted way.
 
 1. As your workflow completes successfully, Mona will automatically prepare the next step in your learning journey!
