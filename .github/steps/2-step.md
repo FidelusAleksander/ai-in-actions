@@ -58,7 +58,7 @@ We'll follow the three-step pattern: gathering context from issue events, proces
 
    In this scenario we want to analyze the issue content to provide intelligent feedback and recommendations:
 
-   GitHub Actions automatically provides us with rich context through the `github.event` object whenever an issue is opened. This includes the issue title, body content, and author information—exactly the data our AI needs to provide intelligent analysis.
+   GitHub Actions automatically provides us with [rich context](https://docs.github.com/en/webhooks/webhook-events-and-payloads?actionType=opened#issues) through the `github.event` object whenever an issue is opened. This includes the issue title, body content, and author information—exactly the data `ai-inference` needs to provide intelligent analysis.
 
    ```yaml
    jobs:
