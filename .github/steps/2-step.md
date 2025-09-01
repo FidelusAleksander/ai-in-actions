@@ -137,7 +137,10 @@ We'll follow the three-step pattern: gathering context from issue events, proces
 <details>
 <summary>Having trouble? 🤷</summary><br/>
 
-- If the workflow didn’t run, confirm the trigger is `issues: [opened]` and you created a new issue (not edited an existing one).
+- If the workflow didn’t run, confirm that:
+  - the workflow is in `.github/workflows` directory
+  - the trigger is `issues: [opened]` and you created a new issue (not edited an existing one).
 - If the workflow failed to parse, check that the YAML indentation is correct and that all required fields are present.
+- If the workflow failed for any reason, e.g because it was incomplete or incorrectly formatted, you will need to fix it and then open another issue to trigger the workflow again.
 
 </details>

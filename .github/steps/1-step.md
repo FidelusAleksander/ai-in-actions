@@ -93,7 +93,6 @@ Now let's test the workflow you just created to see AI in action!
 
    <img width="900" alt="run workflow manual trigger" src="https://github.com/user-attachments/assets/89d96ce7-ca5e-4f5f-b8d0-25ebd5cdc4d6" />
 
-
 1. Wait for the workflow to complete and check the workflow run summary to see the AI's response displayed in a nicely formatted way.
 
 1. As your workflow completes successfully, Mona will automatically prepare the next step in your learning journey!
@@ -101,7 +100,9 @@ Now let's test the workflow you just created to see AI in action!
 <details>
 <summary>Having trouble? 🤷</summary><br/>
 
-- **Workflow fails to run**: Ensure you're on a repository where you have write permissions and that GitHub Actions are enabled
+- **Workflow fails to run**: Ensure the workflow is complete and properly yaml formatted, if it's not then:
+  - Find the issue in the workflow and commit the changes again to `main` branch
+  - Try running the workflow again
 - **No AI response**: Make sure the `id: ai-response` is set on the AI Inference step and referenced correctly in the Display step
 - **Permission errors**: Double-check that the `models: read` permission is properly configured in your workflow file
 - **Action not found**: Verify you're using the exact action name: `actions/ai-inference@v2`
