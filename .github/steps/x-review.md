@@ -14,3 +14,4 @@ Here's a recap of your accomplishments:
 
 - Take another GitHub Skills exercise on [GitHub Learn](https://learn.github.com/skills)
 - Browse the [GitHub Marketplace](https://github.com/marketplace?type=actions) to discover actions that complement `ai-inference` and build more sophisticated AI-powered workflows
+- Take a look at other, real world usage examples that are available in the [github-samples/models-in-actions](https://github.com/github-samples/models-in-actions) repository
